@@ -1,2 +1,10 @@
 ---
 # handlers file for neo4j
+
+- name: Restart Neo4j
+  service: name=neo4j-service state=restarted
+  sudo: true
+
+- name: Reboot
+  command: reboot
+  sudo: true
