@@ -1,2 +1,32 @@
 ---
 # tasks file for neo4j
+
+- name: Check if the server is running Ubuntu 
+  fail: msg="This role requires an Ubuntu server"
+  when: ansible_distribution != "Ubuntu"
+
+- name: Import the signing key for the Neo Technology Debian repository for Neo4j
+  apt_key: url=http://debian.neo4j.org/neotechnology.gpg.key state=present
+
+- name: Add the Neo Technology Debian repository for Neo4j
+  apt_repository: repo="deb http://debian.neo4j.org/repo stable/" state=present update_cache=yes
+
+- name: Install Neo4j 
+  apt: pkg=neo4j state=present
+
+- name: Ensure graph DB folder exists and has the correct permissions
+  file: path={{ neo4j_server_database_location }} state=directory owner=neo4j group=nogroup mode=0755
+
+- name: Configure Neo4j server properties
+  template: src=neo4j-server.properties.j2 dest=/etc/neo4j/neo4j-server.properties owner=neo4j group=adm mode=0644
+  notify: Restart Neo4j
+  
+- name: Ensure open files soft and hard limits are set
+  copy: src=etc/security/limits.d/neo4j.conf dest=/etc/security/limits.d/neo4j.conf owner=root group=root mode=0644
+
+- name: Ensure pam_limits.so is enabled 
+  lineinfile: dest=/etc/pam.d/su  regexp="^(# )?session    required   pam_limits.so" line="session    required   pam_limits.so" state=present
+  notify: Reboot
+
+- name: Ensure the Neo4j service is enabled and started
+  service: name=neo4j-service enabled=yes state=started 
