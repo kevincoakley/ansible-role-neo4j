@@ -2,9 +2,11 @@
 # handlers file for neo4j
 
 - name: Restart Neo4j
-  service: name=neo4j-service state=restarted
-  sudo: true
+  service: name=neo4j state=restarted
+  become: yes
+  become_method: sudo
 
 - name: Reboot
   command: reboot
-  sudo: true
+  become: yes
+  become_method: sudo
