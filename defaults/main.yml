@@ -1,5 +1,5 @@
 ---
 # defaults file for neo4j
 
-neo4j_server_database_location: /var/lib/neo4j/data/graph.db
+neo4j_server_database_location: /var/lib/neo4j/data
 neo4j_allow_any_connection: false
