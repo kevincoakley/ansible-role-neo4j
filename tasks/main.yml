@@ -1,46 +1,76 @@
 ---
-# tasks file for neo4j
-
-- name: Check if the server is running Ubuntu 
-  fail: msg="This role requires an Ubuntu server"
+- name: Check if the server is running Ubuntu
+  fail:
+    msg: "This role requires an Ubuntu server"
   when: ansible_distribution != "Ubuntu"
 
-- name: Add the openjdk restricted ppa
-  apt_repository: repo='ppa:openjdk-r/ppa'
-
 - name: Install OpenJDK 8
-  apt: pkg=openjdk-8-jdk state=present
+  apt:
+    pkg: openjdk-8-jdk
+    state: present
 
 - name: Import the signing key for the Neo Technology Debian repository for Neo4j
-  apt_key: url=http://debian.neo4j.org/neotechnology.gpg.key state=present
+  apt_key:
+    url: http://debian.neo4j.org/neotechnology.gpg.key
+    state: present
 
 - name: Add the Neo Technology Debian repository for Neo4j
-  apt_repository: repo="deb http://debian.neo4j.org/repo stable/" state=present update_cache=yes
+  apt_repository:
+    repo: "deb http://debian.neo4j.org/repo stable/"
+    state: present
+    update_cache: yes
 
 - name: Install Neo4j 
-  apt: pkg=neo4j state=present
+  apt:
+    pkg: neo4j
+    state: present
 
 - name: Ensure graph DB folder exists and has the correct permissions
-  file: path={{ neo4j_server_database_location }} state=directory owner=neo4j group=nogroup mode=0755
+  file:
+    path: "{{ neo4j_server_database_location }}"
+    state: directory
+    owner: neo4j
+    group: nogroup
+    mode: 0755
 
 - name: Set the neo4j data directory
-  lineinfile: dest=/etc/neo4j/neo4j.conf  regexp="^dbms\.directories\.data=.*" line="dbms.directories.data={{ neo4j_server_database_location }}" state=present
+  lineinfile:
+    dest: /etc/neo4j/neo4j.conf
+    regexp: '^dbms\.directories\.data=.*'
+    line: "dbms.directories.data={{ neo4j_server_database_location }}"
+    state: present
   notify: Restart Neo4j
 
 - name: Allow any connection to Neo4J
-  lineinfile: dest=/etc/neo4j/neo4j.conf  regexp="^(# )?dbms.connector.http.address=0.0.0.0:7474" line="dbms.connector.http.address=0.0.0.0:7474" state=present
+  lineinfile:
+    dest: /etc/neo4j/neo4j.conf
+    regexp: '^(# )?dbms.connector.http.address=0.0.0.0:7474'
+    line: "dbms.connector.http.address=0.0.0.0:7474"
+    state: present
   when: "{{ neo4j_allow_any_connection }}"
   notify: Restart Neo4j
 
 - name: Ensure open files soft and hard limits are set
-  copy: src=etc/security/limits.d/neo4j.conf dest=/etc/security/limits.d/neo4j.conf owner=root group=root mode=0644
+  copy:
+    src: etc/security/limits.d/neo4j.conf
+    dest: /etc/security/limits.d/neo4j.conf
+    owner: root
+    group: root
+    mode: 0644
 
 - name: Ensure pam_limits.so is enabled 
-  lineinfile: dest=/etc/pam.d/su  regexp="^(# )?session    required   pam_limits.so" line="session    required   pam_limits.so" state=present
+  lineinfile:
+    dest: /etc/pam.d/su
+    regexp: '^(# )?session    required   pam_limits.so'
+    line: "session    required   pam_limits.so"
+    state: present
   notify: Reboot
 
 - name: Add ulimit to init.d script
-  lineinfile: dest=/etc/init.d/neo4j line="  ulimit -n 40000" insertbefore="^  start-stop-daemon.*"
+  lineinfile:
+    dest: /etc/init.d/neo4j
+    line: "  ulimit -n 40000"
+    insertbefore: "^  start-stop-daemon.*"
   notify: Restart Neo4j
 
 - name: insert/update HTML surrounded by custom markers after <body> line
@@ -55,6 +85,8 @@
         fi
   notify: Restart Neo4j
 
-
 - name: Ensure the Neo4j service is enabled and started
-  service: name=neo4j enabled=yes state=started 
+  service:
+    name: neo4j
+    enabled: yes
+    state: started

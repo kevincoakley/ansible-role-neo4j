@@ -1,0 +1,11 @@
+---
+docker_containers:
+  - name: ubuntu-system
+    image: kevincoakley/ubuntu16.04-systemd
+    expose:
+      - "7474"
+    ports:
+      - "2200:22"
+      - "7474:7474"
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup"
