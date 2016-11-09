@@ -22,6 +22,10 @@
   become: yes
   become_method: sudo
 
+  vars:
+    neo4j_allow_any_connection: true
+
+
   roles:
     - ansible-role-neo4j
     - neo4j-test
