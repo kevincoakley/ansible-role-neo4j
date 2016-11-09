@@ -1,29 +1,36 @@
----
+sudo: required
+dist: trusty
 language: python
-python: "2.7"
+python:
+  - "2.7"
+services:
+  - docker
+env:
+  global:
+    - PATH="/usr/bin:$PATH"
 
-# Use the new container infrastructure
-sudo: false
-
-# Install ansible
-addons:
-  apt:
-    packages:
-    - python-pip
+before_install:
+    # Ansible doesn't play well with virtualenv
+  - deactivate
+  - sudo apt-get update -qq
+  - sudo apt-get install -y -o Dpkg::Options::="--force-confnew" docker-engine
+  - mkdir -p ~/.ssh/
+  - printf "Host 127.0.0.1\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null" > ~/.ssh/config
 
 install:
-  # Install ansible
-  - pip install ansible
-
-  # Check ansible version
+  - sudo pip install docker-py
+    # software-properties-common for ubuntu 14.04
+  - sudo apt-get install -y sshpass software-properties-common
+  - sudo apt-add-repository -y ppa:ansible/ansible
+  - sudo apt-get update -qq
+  - sudo apt-get install -y ansible
+  - sudo rm /usr/bin/python && sudo ln -s /usr/bin/python2.7 /usr/bin/python
   - ansible --version
 
-  # Create ansible.cfg with correct roles_path
-  - printf '[defaults]\nroles_path=../' >ansible.cfg
-
 script:
-  # Basic role syntax check
-  - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+  - ansible-playbook -i tests/inventory tests/test.yml --syntax-check
+  # Run the playbook, don't bother stopping the Docker containers
+  - ansible-playbook -i tests/inventory --skip-tags=docker-stop tests/test.yml -vvvv
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
