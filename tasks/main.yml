@@ -5,9 +5,6 @@
   fail: msg="This role requires an Ubuntu server"
   when: ansible_distribution != "Ubuntu"
 
-- name: Add the openjdk restricted ppa
-  apt_repository: repo='ppa:openjdk-r/ppa'
-
 - name: Install OpenJDK 8
   apt: pkg=openjdk-8-jdk state=present
 
