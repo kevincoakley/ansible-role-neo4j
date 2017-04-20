@@ -1,28 +1,13 @@
 ---
-- name: Check if the server is running Ubuntu
-  fail:
-    msg: "This role requires an Ubuntu server"
-  when: ansible_distribution != "Ubuntu"
+- name: Include OS family specific variables
+  include_vars: "{{ ansible_os_family }}.yml"
 
-- name: Install OpenJDK 8
-  apt:
-    pkg: openjdk-8-jdk
-    state: present
-
-- name: Import the signing key for the Neo Technology Debian repository for Neo4j
-  apt_key:
-    url: http://debian.neo4j.org/neotechnology.gpg.key
-    state: present
-
-- name: Add the Neo Technology Debian repository for Neo4j
-  apt_repository:
-    repo: "deb http://debian.neo4j.org/repo stable/"
-    state: present
-    update_cache: yes
+- name: Include OS specific tasks
+  include: "{{ ansible_os_family }}.yml"
 
 - name: Install Neo4j 
-  apt:
-    pkg: neo4j
+  package:
+    name: neo4j
     state: present
 
 - name: Ensure graph DB folder exists and has the correct permissions
@@ -30,7 +15,7 @@
     path: "{{ neo4j_server_database_location }}"
     state: directory
     owner: neo4j
-    group: nogroup
+    group: "{{ neo4j_group }}"
     mode: 0755
 
 - name: Set the neo4j data directory

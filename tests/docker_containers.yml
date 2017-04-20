@@ -9,3 +9,12 @@ docker_containers:
       - "7474:7474"
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup"
+  - name: centos-system
+    image: kevincoakley/centos7-systemd
+    expose:
+      - "7474"
+    ports:
+      - "2222:22"
+      - "7475:7474"
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup"
