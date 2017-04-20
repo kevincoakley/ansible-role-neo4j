@@ -47,7 +47,7 @@
     regexp: '^(# )?dbms.connector.http.address=0.0.0.0:7474'
     line: "dbms.connector.http.address=0.0.0.0:7474"
     state: present
-  when: "{{ neo4j_allow_any_connection }}"
+  when: neo4j_allow_any_connection | bool
   notify: Restart Neo4j
 
 - name: Ensure open files soft and hard limits are set
