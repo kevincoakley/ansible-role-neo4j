@@ -7,7 +7,7 @@
     - docker_containers.yml
 
   vars:
-    - container_state: reloaded
+    - container_state: started
     - container_privileged: true
 
   roles:
