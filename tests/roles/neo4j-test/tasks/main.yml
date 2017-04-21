@@ -1,6 +1,6 @@
 ---
 - name: Give the Neo4j time to start
-  pause: seconds=10
+  pause: seconds=45
 
 - name: Verify that Neo4j is running on port 7474
   uri:
