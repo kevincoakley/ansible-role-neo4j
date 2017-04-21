@@ -1,0 +1,16 @@
+---
+- name: Install OpenJDK 8
+  package:
+    name: openjdk-8-jdk
+    state: present
+
+- name: Import the signing key for the Neo Technology Debian repository for Neo4j
+  apt_key:
+    url: http://debian.neo4j.org/neotechnology.gpg.key
+    state: present
+
+- name: Add the Neo Technology Debian repository for Neo4j
+  apt_repository:
+    repo: "deb http://debian.neo4j.org/repo stable/"
+    state: present
+    update_cache: yes
