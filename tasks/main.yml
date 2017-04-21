@@ -59,6 +59,30 @@
   when: neo4j_allow_any_connection | bool
   notify: Restart Neo4j
 
+- name: Set the neo4j bolt listen address
+  lineinfile:
+    dest: /etc/neo4j/neo4j.conf
+    regexp: '^dbms\.connector\.bolt\.listen_address=.*'
+    line: "dbms.connector.bolt.listen_address={{ neo4j_connector_bolt_listen_address }}"
+    state: present
+  notify: Restart Neo4j
+
+- name: Set the neo4j http listen address
+  lineinfile:
+    dest: /etc/neo4j/neo4j.conf
+    regexp: '^dbms\.connector\.http\.listen_address=.*'
+    line: "dbms.connector.http.listen_address={{ neo4j_connector_http_listen_address }}"
+    state: present
+  notify: Restart Neo4j
+
+- name: Set the neo4j https listen address
+  lineinfile:
+    dest: /etc/neo4j/neo4j.conf
+    regexp: '^dbms\.connector\.https\.listen_address=.*'
+    line: "dbms.connector.https.listen_address={{ neo4j_connector_https_listen_address }}"
+    state: present
+  notify: Restart Neo4j
+
 - name: Ensure open files soft and hard limits are set
   copy:
     src: etc/security/limits.d/neo4j.conf

@@ -17,7 +17,7 @@
     - docker-start
 
 
-- name: Test the Neo4j role for Ubuntu systems
+- name: Test the Neo4j role
   hosts: neo4j
   become: yes
   become_method: sudo
