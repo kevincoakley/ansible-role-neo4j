@@ -49,7 +49,6 @@
     regexp: '^(# )?session    required   pam_limits.so'
     line: "session    required   pam_limits.so"
     state: present
-  notify: Reboot
 
 - name: Add ulimit to init.d script
   lineinfile:
