@@ -26,6 +26,30 @@
     state: present
   notify: Restart Neo4j
 
+- name: Set the neo4j heap inital size
+  lineinfile:
+    dest: /etc/neo4j/neo4j.conf
+    regexp: '^dbms\.memory\.heap\.initial_size=.*'
+    line: "dbms.memory.heap.initial_size={{ neo4j_memory_heap_initial_size }}"
+    state: present
+  notify: Restart Neo4j
+
+- name: Set the neo4j heap max size
+  lineinfile:
+    dest: /etc/neo4j/neo4j.conf
+    regexp: '^dbms\.memory\.heap\.max_size=.*'
+    line: "dbms.memory.heap.max_size={{ neo4j_memory_heap_max_size }}"
+    state: present
+  notify: Restart Neo4j
+
+- name: Set the neo4j pagecache size
+  lineinfile:
+    dest: /etc/neo4j/neo4j.conf
+    regexp: '^dbms\.memory\.pagecache\.size=.*'
+    line: "dbms.memory.pagecache.size={{ neo4j_memory_pagecache_size }}"
+    state: present
+  notify: Restart Neo4j
+
 - name: Allow any connection to Neo4J
   lineinfile:
     dest: /etc/neo4j/neo4j.conf
