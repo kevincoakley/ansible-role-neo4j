@@ -53,8 +53,8 @@
 - name: Allow any connection to Neo4J
   lineinfile:
     dest: /etc/neo4j/neo4j.conf
-    regexp: '^(# )?dbms.connector.http.address=0.0.0.0:7474'
-    line: "dbms.connector.http.address=0.0.0.0:7474"
+    regexp: '^(# )?dbms.connectors.default_listen_address=0.0.0.0'
+    line: "dbms.connectors.default_listen_address=0.0.0.0"
     state: present
   when: neo4j_allow_any_connection | bool
   notify: Restart Neo4j
