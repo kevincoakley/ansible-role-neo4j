@@ -1,16 +1,19 @@
 ---
-- name: Install OpenJDK 8
+- name: Install Required Ubuntu Packages
   package:
-    name: openjdk-8-jdk
+    name: "{{ item }}"
     state: present
+  with_items:
+    - openjdk-8-jdk
+    - apt-transport-https
 
 - name: Import the signing key for the Neo Technology Debian repository for Neo4j
   apt_key:
-    url: http://debian.neo4j.org/neotechnology.gpg.key
+    url: https://debian.neo4j.org/neotechnology.gpg.key
     state: present
 
 - name: Add the Neo Technology Debian repository for Neo4j
   apt_repository:
-    repo: "deb http://debian.neo4j.org/repo stable/"
+    repo: "deb https://debian.neo4j.org/repo stable/"
     state: present
     update_cache: yes
