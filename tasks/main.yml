@@ -3,7 +3,7 @@
   include_vars: "{{ ansible_os_family }}.yml"
 
 - name: Include OS specific tasks
-  include: "{{ ansible_os_family }}.yml"
+  include_tasks: "{{ ansible_os_family }}.yml"
 
 - name: Install Neo4j
   package:
