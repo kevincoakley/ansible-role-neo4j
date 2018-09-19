@@ -98,25 +98,6 @@
     line: "session    required   pam_limits.so"
     state: present
 
-- name: Add ulimit to init.d script
-  lineinfile:
-    dest: /etc/init.d/neo4j
-    line: "  ulimit -n 40000"
-    insertbefore: "^  start-stop-daemon.*"
-  notify: Restart Neo4j
-
-- name: insert/update HTML surrounded by custom markers after <body> line
-  blockinfile:
-    dest: /etc/init.d/neo4j
-    insertbefore: "  ulimit -n 40000"
-    content: |
-        if [ ! -d /var/run/neo4j ]; then
-          mkdir -p /var/run/neo4j
-          chown neo4j /var/run/neo4j
-          chgrp nogroup /var/run/neo4j
-        fi
-  notify: Restart Neo4j
-
 - name: Ensure the Neo4j service is enabled and started
   service:
     name: neo4j
