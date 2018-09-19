@@ -1,7 +1,7 @@
 ---
 docker_containers:
   - name: ubuntu-system
-    image: kevincoakley/ubuntu16.04-systemd
+    image: kevincoakley/ubuntu18.04-systemd
     expose:
       - "7474"
       - "7473"

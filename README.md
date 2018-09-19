@@ -3,7 +3,7 @@ ansible-role-neo4j
 
 [![Build Status](https://travis-ci.org/kevincoakley/ansible-role-neo4j.svg?branch=master)](https://travis-ci.org/kevincoakley/ansible-role-neo4j)
 
-Install Neo4j - https://www.neo4j.com . Tested with CentOS 7 and Ubuntu 16.04.
+Install Neo4j - https://www.neo4j.com . Tested with Neo4j 3.4.7 on CentOS 7 and Ubuntu 18.04.
 
 Requirements
 ------------
