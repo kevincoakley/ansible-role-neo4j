@@ -101,5 +101,5 @@
 - name: Ensure the Neo4j service is enabled and started
   service:
     name: neo4j
-    enabled: yes
+    enabled: true
     state: started

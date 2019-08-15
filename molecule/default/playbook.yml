@@ -1,0 +1,19 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  vars:
+    neo4j_allow_any_connection: true
+
+  roles:
+    - role: ansible-role-neo4j
+
+  post_tasks:
+    - name: Give the Neo4j time to start
+      pause: seconds=30
+
+    - name: Verify that Neo4j is running on port 7474
+      uri:
+        url: http://127.0.0.1:7474/
+        status_code: 200

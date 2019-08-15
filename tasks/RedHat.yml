@@ -10,4 +10,4 @@
     description: Neo4j Yum Repo
     baseurl: http://yum.neo4j.org/stable
     gpgkey: http://debian.neo4j.org/neotechnology.gpg.key
-    gpgcheck: yes
+    gpgcheck: true

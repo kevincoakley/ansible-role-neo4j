@@ -1,4 +1,13 @@
 ---
+# See: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863199
+- name: Ensure 'man' directory exists.
+  file:
+    path: /usr/share/man/man1
+    state: directory
+    recurse: true
+  when:
+    - ansible_distribution == 'Ubuntu'
+
 - name: Install Required Ubuntu Packages
   package:
     name: "{{ item }}"
@@ -16,4 +25,4 @@
   apt_repository:
     repo: "deb https://debian.neo4j.org/repo stable/"
     state: present
-    update_cache: yes
+    update_cache: true
