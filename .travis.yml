@@ -1,47 +1,19 @@
-sudo: required
-dist: trusty
+---
 language: python
-python:
-  - "2.7"
-services:
-  - docker
-env:
-  global:
-    - PATH="/usr/bin:$PATH"
+services: docker
 
-before_install:
-    # Ansible doesn't play well with virtualenv
-  - deactivate
-  - sudo apt-get update -qq
-  - sudo apt-get install -y -o Dpkg::Options::="--force-confnew" docker-ce
-  - mkdir -p ~/.ssh/
-  - printf "Host 127.0.0.1\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null" > ~/.ssh/config
+env:
+  matrix:
+    - MOLECULE_DISTRO: centos7
+    - MOLECULE_DISTRO: ubuntu1804
 
 install:
-  - sudo pip install docker-py
-    # software-properties-common for ubuntu 14.04
-  - sudo apt-get install -y sshpass software-properties-common
-  - sudo apt-add-repository -y ppa:ansible/ansible
-  - sudo apt-get update -qq
-  - sudo apt-get install -y ansible
-  - sudo rm /usr/bin/python && sudo ln -s /usr/bin/python2.7 /usr/bin/python
-  - ansible --version
-  - sudo pip install ansible-lint
-  - ansible-lint --version
+  # Install test dependencies.
+  - pip install molecule docker
 
 script:
-  # ansible-lint checks playbooks for practices and behaviour that could potentially be improved
-  - ansible-lint -R .
-  # Perform a syntax check on the playbook
-  - ansible-playbook -i tests/inventory tests/test.yml --syntax-check
-  # Run the playbook, don't bother stopping the Docker containers
-  - ansible-playbook -i tests/inventory --skip-tags=docker-stop tests/test.yml -vvvv
-  # Run again to test idempotence
-  - >
-    ansible-playbook -i tests/inventory --tags=neo4j tests/test.yml
-    | grep -q 'changed=0.*failed=0'
-    && (echo 'Idempotence test: pass' && exit 0)
-    || (echo 'Idempotence test: fail' && exit 1)
+  # Run tests.
+  - molecule test
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
