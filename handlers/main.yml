@@ -3,5 +3,5 @@
 
 - name: Restart Neo4j
   service: name=neo4j state=restarted
-  become: yes
+  become: true
   become_method: sudo
