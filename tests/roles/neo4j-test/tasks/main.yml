@@ -1,8 +1,0 @@
----
-- name: Give the Neo4j time to start
-  pause: seconds=45
-
-- name: Verify that Neo4j is running on port 7474
-  uri:
-    url: http://127.0.0.1:7474/
-    status_code: 200
