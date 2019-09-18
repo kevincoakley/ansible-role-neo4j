@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: neo4j
   author: Kevin Coakley
   description: Install Neo4j (http://neo4j.com/)
   license: BSD
