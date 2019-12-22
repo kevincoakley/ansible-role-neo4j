@@ -9,3 +9,4 @@ neo4j_memory_pagecache_size: 10g
 neo4j_connector_bolt_listen_address: :7687
 neo4j_connector_http_listen_address: :7474
 neo4j_connector_https_listen_address: :7473
+neo4j_password: 'change_me!'
