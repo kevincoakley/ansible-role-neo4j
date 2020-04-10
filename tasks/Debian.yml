@@ -8,6 +8,10 @@
   when:
     - ansible_distribution == 'Ubuntu'
 
+- name: Update repositories cache
+  apt:
+    update_cache: yes
+
 - name: Install Required Ubuntu Packages
   package:
     name: "{{ item }}"
