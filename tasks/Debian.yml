@@ -8,13 +8,18 @@
   when:
     - ansible_distribution == 'Ubuntu'
 
+- name: Update repositories cache
+  apt:
+    update_cache: true
+
 - name: Install Required Ubuntu Packages
   package:
     name: "{{ item }}"
     state: present
   with_items:
-    - openjdk-8-jdk
+    - openjdk-11-jdk
     - apt-transport-https
+    - gpg-agent
 
 - name: Import the signing key for the Neo Technology Debian repository for Neo4j
   apt_key:
@@ -23,6 +28,6 @@
 
 - name: Add the Neo Technology Debian repository for Neo4j
   apt_repository:
-    repo: "deb https://debian.neo4j.org/repo stable/"
+    repo: "deb https://debian.neo4j.com stable latest"
     state: present
     update_cache: true
