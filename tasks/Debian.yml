@@ -10,7 +10,7 @@
 
 - name: Update repositories cache
   apt:
-    update_cache: yes
+    update_cache: true
 
 - name: Install Required Ubuntu Packages
   package:
@@ -28,6 +28,6 @@
 
 - name: Add the Neo Technology Debian repository for Neo4j
   apt_repository:
-    repo: "deb https://debian.neo4j.org/repo stable/"
+    repo: "deb https://debian.neo4j.com stable latest"
     state: present
     update_cache: true
