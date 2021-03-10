@@ -24,11 +24,10 @@ platforms:
     pre_build_image: true
 provisioner:
   name: ansible
-  lint:
-    name: ansible-lint
+  log: false
+  options:
+    vvv: false
 scenario:
   name: default
 verifier:
-  name: testinfra
-  lint:
-    name: flake8
+  name: ansible
