@@ -28,6 +28,7 @@ galaxy_info:
     - name: Ubuntu
       versions:
         - bionic
+        - focal
 
   galaxy_tags:
     - database
