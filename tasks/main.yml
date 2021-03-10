@@ -7,17 +7,17 @@
 
 - name: Determine the neo4j package to install
   set_fact:
-    neo4j_package: neo4j{% if neo4j_edition == 'enterprise'%}-enterprise{% endif %}{%if neo4j_version is defined %}-{{neo4j_version}}{% endif %}
+    neo4j_package: neo4j{% if neo4j_edition == 'enterprise' %}-enterprise{% endif %}{% if neo4j_version is defined %}-{{ neo4j_version }}{% endif %}
 
 - name: Install Neo4j
   package:
-    name: "{{neo4j_package}}"
+    name: "{{ neo4j_package }}"
     state: present
   when: neo4j_edition == 'community'
 
 - name: Install Neo4j Enterprise
   package:
-    name: "{{neo4j_package}}"
+    name: "{{ neo4j_package }}"
     state: present
   when: neo4j_edition == 'enterprise'
   environment:

@@ -5,6 +5,7 @@
     path: /usr/share/man/man1
     state: directory
     recurse: true
+    mode: 0644
   when:
     - ansible_distribution == 'Ubuntu'
 
