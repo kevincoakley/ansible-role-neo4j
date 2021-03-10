@@ -22,6 +22,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install ansible ansible-lint flake8 molecule molecule-docker docker
+          ansible --version
+          ansible-lint --version
+          molecule --version
       - name: Test with molecule
         run: |
           molecule test --all
