@@ -6,7 +6,7 @@ driver:
 lint: |
   set -e
   yamllint -c molecule/yaml-lint.yml .
-  ansible-lint
+  ansible-lint -c molecule/ansible-lint.yml .
   flake8
 platforms:
   - name: instance
