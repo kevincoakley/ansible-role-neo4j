@@ -6,7 +6,7 @@ driver:
 lint: |
   set -e
   yamllint -c molecule/yaml-lint.yml .
-  ansible-lint
+  ansible-lint -c molecule/ansible-lint.yml .
   flake8
 platforms:
   - name: instance
@@ -24,11 +24,10 @@ platforms:
     pre_build_image: true
 provisioner:
   name: ansible
-  lint:
-    name: ansible-lint
+  log: false
+  options:
+    vvv: false
 scenario:
   name: default
 verifier:
-  name: testinfra
-  lint:
-    name: flake8
+  name: ansible
