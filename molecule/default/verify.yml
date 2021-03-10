@@ -1,0 +1,10 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Verify that Neo4j is running on port 7474
+      uri:
+        url: http://127.0.0.1:7474/
+        status_code: 200
