@@ -49,3 +49,6 @@ fabric.properties
 
 # Ignore Ansible *.retry files
 *.retry
+
+# Ignore Molecule cache directory
+.cache/

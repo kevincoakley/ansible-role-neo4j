@@ -4,6 +4,16 @@
   become: true
 
   tasks:
+    - name: Debian | Verify APT repository
+      lineinfile:
+        dest: /etc/apt/sources.list.d/debian_neo4j_com.list
+        line: 'deb https://debian.neo4j.com stable latest'
+      check_mode: true
+      register: apt_repo
+      failed_when: apt_repo.changed
+      when:
+        - ansible_os_family == 'Debian'
+
     - name: Verify that Neo4j is running on port 7474
       uri:
         url: http://127.0.0.1:7474/

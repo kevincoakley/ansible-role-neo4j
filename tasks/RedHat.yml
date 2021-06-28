@@ -13,3 +13,7 @@
     baseurl: https://yum.neo4j.com/stable
     gpgkey: https://debian.neo4j.com/neotechnology.gpg.key
     gpgcheck: true
+
+- name: Determine the neo4j package to install
+  set_fact:
+    neo4j_package: neo4j{% if neo4j_edition == 'enterprise' %}-enterprise{% endif %}{% if neo4j_version is defined %}-{{ neo4j_version }}{% endif %}

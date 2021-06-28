@@ -5,10 +5,6 @@
 - name: Include OS specific tasks
   include_tasks: "{{ ansible_os_family }}.yml"
 
-- name: Determine the neo4j package to install
-  set_fact:
-    neo4j_package: neo4j{% if neo4j_edition == 'enterprise' %}-enterprise{% endif %}{% if neo4j_version is defined %}-{{ neo4j_version }}{% endif %}
-
 - name: Install Neo4j
   package:
     name: "{{ neo4j_package }}"
