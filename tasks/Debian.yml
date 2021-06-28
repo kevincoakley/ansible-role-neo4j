@@ -29,6 +29,10 @@
 
 - name: Add the Neo Technology Debian repository for Neo4j
   apt_repository:
-    repo: "deb https://debian.neo4j.com stable latest"
+    repo: "deb https://debian.neo4j.com stable {% if neo4j_version is defined %}{{ neo4j_version.split('.')[0:2] | join('.') }}{% else %}latest{% endif %}"
     state: present
     update_cache: true
+
+- name: Determine the neo4j package to install
+  set_fact:
+    neo4j_package: neo4j{% if neo4j_edition == 'enterprise' %}-enterprise{% endif %}{% if neo4j_version is defined %}=1:{{ neo4j_version }}{% endif %}
