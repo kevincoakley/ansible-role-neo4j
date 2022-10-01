@@ -2,7 +2,7 @@
 # defaults file for neo4j
 
 # 3.5/EOL
-#neo4j_debian_repo: "deb https://debian.neo4j.org/repo stable/"
+# neo4j_debian_repo: "deb https://debian.neo4j.org/repo stable/"
 # 4.4
 neo4j_debian_repo: 'deb https://debian.neo4j.com stable 4.4'
 
