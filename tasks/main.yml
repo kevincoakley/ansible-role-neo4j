@@ -1,17 +1,17 @@
 ---
 - name: Include OS family specific variables
-  include_vars: "{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
 
 - name: Include OS specific tasks
-  include_tasks: "{{ ansible_os_family }}.yml"
+  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
 
 - name: Install Neo4j
-  package:
+  ansible.builtin.package:
     name: neo4j
     state: present
 
 - name: Ensure graph DB folder exists and has the correct permissions
-  file:
+  ansible.builtin.file:
     path: "{{ neo4j_server_database_location }}"
     state: directory
     owner: neo4j
@@ -19,72 +19,22 @@
     mode: 0755
 
 - name: Set the neo4j data directory
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/neo4j/neo4j.conf
     regexp: '^dbms\.directories\.data=.*'
     line: "dbms.directories.data={{ neo4j_server_database_location }}"
     state: present
   notify: Restart Neo4j
 
-- name: Set the neo4j heap inital size
-  lineinfile:
+- name: Set the neo4j config
+  ansible.builtin.template:
+    src: neo4j.conf.j2
     dest: /etc/neo4j/neo4j.conf
-    regexp: '^dbms\.memory\.heap\.initial_size=.*'
-    line: "dbms.memory.heap.initial_size={{ neo4j_memory_heap_initial_size }}"
-    state: present
-  notify: Restart Neo4j
-
-- name: Set the neo4j heap max size
-  lineinfile:
-    dest: /etc/neo4j/neo4j.conf
-    regexp: '^dbms\.memory\.heap\.max_size=.*'
-    line: "dbms.memory.heap.max_size={{ neo4j_memory_heap_max_size }}"
-    state: present
-  notify: Restart Neo4j
-
-- name: Set the neo4j pagecache size
-  lineinfile:
-    dest: /etc/neo4j/neo4j.conf
-    regexp: '^dbms\.memory\.pagecache\.size=.*'
-    line: "dbms.memory.pagecache.size={{ neo4j_memory_pagecache_size }}"
-    state: present
-  notify: Restart Neo4j
-
-- name: Allow any connection to Neo4J
-  lineinfile:
-    dest: /etc/neo4j/neo4j.conf
-    regexp: '^(# )?dbms.connectors.default_listen_address=0.0.0.0'
-    line: "dbms.connectors.default_listen_address=0.0.0.0"
-    state: present
-  when: neo4j_allow_any_connection | bool
-  notify: Restart Neo4j
-
-- name: Set the neo4j bolt listen address
-  lineinfile:
-    dest: /etc/neo4j/neo4j.conf
-    regexp: '^dbms\.connector\.bolt\.listen_address=.*'
-    line: "dbms.connector.bolt.listen_address={{ neo4j_connector_bolt_listen_address }}"
-    state: present
-  notify: Restart Neo4j
-
-- name: Set the neo4j http listen address
-  lineinfile:
-    dest: /etc/neo4j/neo4j.conf
-    regexp: '^dbms\.connector\.http\.listen_address=.*'
-    line: "dbms.connector.http.listen_address={{ neo4j_connector_http_listen_address }}"
-    state: present
-  notify: Restart Neo4j
-
-- name: Set the neo4j https listen address
-  lineinfile:
-    dest: /etc/neo4j/neo4j.conf
-    regexp: '^dbms\.connector\.https\.listen_address=.*'
-    line: "dbms.connector.https.listen_address={{ neo4j_connector_https_listen_address }}"
-    state: present
+    mode: '0644'
   notify: Restart Neo4j
 
 - name: Ensure open files soft and hard limits are set
-  copy:
+  ansible.builtin.copy:
     src: etc/security/limits.d/neo4j.conf
     dest: /etc/security/limits.d/neo4j.conf
     owner: root
@@ -92,21 +42,21 @@
     mode: 0644
 
 - name: Ensure pam_limits.so is enabled
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/pam.d/su
     regexp: '^(# )?session    required   pam_limits.so'
     line: "session    required   pam_limits.so"
     state: present
 
 - name: Ensure the Neo4j service is enabled and started
-  service:
+  ansible.builtin.service:
     name: neo4j
     enabled: true
     state: started
 
 # https://neo4j.com/docs/operations-manual/current/configuration/set-initial-password/
 - name: Set Neo4j initial password
-  command: "neo4j-admin set-initial-password '{{ neo4j_password }}'"
+  ansible.builtin.command: "neo4j-admin set-initial-password '{{ neo4j_password }}'"
   args:
     creates: /var/lib/neo4j/data/dbms/auth.ini
-  when: neo4j_password is defined and neo4j_password|string
+  when: neo4j_password is defined and neo4j_password | string

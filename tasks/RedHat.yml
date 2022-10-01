@@ -1,11 +1,11 @@
 ---
 - name: Install which
-  package:
+  ansible.builtin.package:
     name: which
     state: present
 
 - name: Add Neo4j Yum Repo
-  yum_repository:
+  ansible.builtin.yum_repository:
     name: neo4j
     description: Neo4j Yum Repo
     baseurl: http://yum.neo4j.org/stable

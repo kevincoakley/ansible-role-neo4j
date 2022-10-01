@@ -1,7 +1,7 @@
 ---
 # See: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863199
 - name: Ensure 'man' directory exists.
-  file:
+  ansible.builtin.file:
     path: /usr/share/man/man1
     state: directory
     recurse: true
@@ -9,20 +9,20 @@
     - ansible_distribution == 'Ubuntu'
 
 - name: Install Required Ubuntu Packages
-  package:
+  ansible.builtin.package:
     name: "{{ item }}"
     state: present
   with_items:
-    - openjdk-8-jdk
+    - openjdk-11-jdk
     - apt-transport-https
 
 - name: Import the signing key for the Neo Technology Debian repository for Neo4j
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://debian.neo4j.org/neotechnology.gpg.key
     state: present
 
 - name: Add the Neo Technology Debian repository for Neo4j
-  apt_repository:
-    repo: "deb https://debian.neo4j.org/repo stable/"
+  ansible.builtin.apt_repository:
+    repo: "{{ neo4j_debian_repo }}"
     state: present
     update_cache: true
