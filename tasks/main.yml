@@ -6,13 +6,13 @@
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
 
 - name: Install Neo4j
-  package:
+  ansible.builtin.package:
     name: "{{ neo4j_package }}"
     state: present
   when: neo4j_edition == 'community'
 
 - name: Install Neo4j Enterprise
-  package:
+  ansible.builtin.package:
     name: "{{ neo4j_package }}"
     state: present
   when: neo4j_edition == 'enterprise'
@@ -43,7 +43,7 @@
   notify: Restart Neo4j
 
 - name: Enable prometheus metrics
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/neo4j/neo4j.conf
     regexp: '^metrics\.prometheus\.enabled=.*'
     line: "metrics.prometheus.enabled={{ neo4j_prometheus_metrics_enabled }}"
@@ -51,7 +51,7 @@
   notify: Restart Neo4j
 
 - name: Set prometheus metrics interface
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/neo4j/neo4j.conf
     regexp: '^metrics\.prometheus\.endpoint=.*'
     line: "metrics.prometheus.endpoint={{ neo4j_prometheus_metrics_endpoint }}"

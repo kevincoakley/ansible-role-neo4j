@@ -8,4 +8,4 @@
     neo4j_memory_pagecache_size: 1g
 
   roles:
-    - role: ansible-role-neo4j
+    - role: kevincoakley.neo4j

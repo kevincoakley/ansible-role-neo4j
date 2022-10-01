@@ -1,6 +1,6 @@
 ---
 - name: Install Required RedHat Packages
-  package:
+  ansible.builtin.package:
     name: "{{ item }}"
     state: present
   with_items:
@@ -15,5 +15,5 @@
     gpgcheck: true
 
 - name: Determine the neo4j package to install
-  set_fact:
+  ansible.builtin.set_fact:
     neo4j_package: neo4j{% if neo4j_edition == 'enterprise' %}-enterprise{% endif %}{% if neo4j_version is defined %}-{{ neo4j_version }}{% endif %}
