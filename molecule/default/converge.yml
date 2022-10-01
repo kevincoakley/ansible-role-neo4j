@@ -1,0 +1,11 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  vars:
+    neo4j_allow_any_connection: true
+    neo4j_memory_pagecache_size: 1g
+
+  roles:
+    - role: ansible-role-neo4j

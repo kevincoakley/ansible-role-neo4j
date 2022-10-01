@@ -1,7 +1,8 @@
 ---
 galaxy_info:
   role_name: neo4j
-  author: kevincoakley
+  namespace: kevincoakley
+  author: Kevin Coakley
   description: Install Neo4j (http://neo4j.com/)
   license: BSD
 
@@ -24,9 +25,11 @@ galaxy_info:
     - name: EL
       versions:
         - '7'
+        - '8'
     - name: Ubuntu
       versions:
         - bionic
+        - focal
 
   galaxy_tags:
     - database

@@ -6,9 +6,18 @@
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
 
 - name: Install Neo4j
-  ansible.builtin.package:
-    name: neo4j
+  package:
+    name: "{{ neo4j_package }}"
     state: present
+  when: neo4j_edition == 'community'
+
+- name: Install Neo4j Enterprise
+  package:
+    name: "{{ neo4j_package }}"
+    state: present
+  when: neo4j_edition == 'enterprise'
+  environment:
+    NEO4J_ACCEPT_LICENSE_AGREEMENT: 'yes'
 
 - name: Ensure graph DB folder exists and has the correct permissions
   ansible.builtin.file:
@@ -31,6 +40,22 @@
     src: neo4j.conf.j2
     dest: /etc/neo4j/neo4j.conf
     mode: '0644'
+  notify: Restart Neo4j
+
+- name: Enable prometheus metrics
+  lineinfile:
+    dest: /etc/neo4j/neo4j.conf
+    regexp: '^metrics\.prometheus\.enabled=.*'
+    line: "metrics.prometheus.enabled={{ neo4j_prometheus_metrics_enabled }}"
+    state: present
+  notify: Restart Neo4j
+
+- name: Set prometheus metrics interface
+  lineinfile:
+    dest: /etc/neo4j/neo4j.conf
+    regexp: '^metrics\.prometheus\.endpoint=.*'
+    line: "metrics.prometheus.endpoint={{ neo4j_prometheus_metrics_endpoint }}"
+    state: present
   notify: Restart Neo4j
 
 - name: Ensure open files soft and hard limits are set
