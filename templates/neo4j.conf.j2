@@ -132,7 +132,11 @@ dbms.connector.https.listen_address={{ neo4j_connector_https_listen_address }}
 #
 # Mandatory setting
 
+{% if neo4j_connector_https_basedir|string %}
+dbms.ssl.policy.default.base_directory={{ neo4j_connector_https_basedir }}
+{% else %}
 #dbms.ssl.policy.default.base_directory=certificates/default
+{% endif %}
 
 # Allows the generation of a fresh private key and a self-signed
 # certificate if none are found in the expected locations. It is
@@ -142,7 +146,7 @@ dbms.connector.https.listen_address={{ neo4j_connector_https_listen_address }}
 # by a trusted certificate authority (CA) and not by utilizing
 # this mode.
 
-#dbms.ssl.policy.default.allow_key_generation=false
+dbms.ssl.policy.default.allow_key_generation={{ neo4j_connector_https_allow_key_generation|bool|lower }}
 
 # Enabling this makes it so that this policy ignores the contents
 # of the trusted_dir and simply resorts to trusting everything.
@@ -155,13 +159,21 @@ dbms.connector.https.listen_address={{ neo4j_connector_https_listen_address }}
 # named private.key is expected under the base directory of the policy.
 # It is mandatory that a key can be found or generated.
 
+{% if neo4j_connector_https_private_key|string %}
+dbms.ssl.policy.default.private_key={{ neo4j_connector_https_private_key }}
+{% else %}
 #dbms.ssl.policy.default.private_key=
+{% endif %}
 
 # The private key for the default SSL policy. By default a file
 # named public.crt is expected under the base directory of the policy.
 # It is mandatory that a certificate can be found or generated.
 
+{% if neo4j_connector_https_public_certificate|string %}
+dbms.ssl.policy.default.public_certificate={{ neo4j_connector_https_public_certificate }}
+{% else %}
 #dbms.ssl.policy.default.public_certificate=
+{% endif %}
 
 # The certificates of trusted parties. By default a directory named
 # 'trusted' is expected under the base directory of the policy. It is
