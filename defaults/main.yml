@@ -6,6 +6,9 @@ neo4j_allow_any_connection: false
 neo4j_memory_heap_initial_size: 512m
 neo4j_memory_heap_max_size: 512m
 neo4j_memory_pagecache_size: 10g
+# default: listen on loopback only
+neo4j_connector_default_list_address: ''
+# neo4j_connector_default_list_address: 0.0.0.0
 neo4j_connector_bolt_listen_address: :7687
 neo4j_connector_http_listen_address: :7474
 

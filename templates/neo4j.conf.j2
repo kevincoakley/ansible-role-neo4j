@@ -58,7 +58,11 @@ dbms.memory.pagecache.size={{ neo4j_memory_pagecache_size }}
 
 # With default configuration Neo4j only accepts local connections.
 # To accept non-local connections, uncomment this line:
+{% if neo4j_connector_default_listen_address|string %}
+dbms.connectors.default_listen_address={{ neo4j_connector_default_list_address }}
+{% else %}
 #dbms.connectors.default_listen_address=0.0.0.0
+{% endif %}
 
 # You can also choose a specific network interface, and configure a non-default
 # port for each connector, by setting their individual listen_address.
@@ -78,7 +82,7 @@ dbms.connector.bolt.enabled=true
 dbms.connector.bolt.listen_address={{ neo4j_connector_bolt_listen_address }}
 
 # HTTP Connector. There can be zero or one HTTP connectors.
-{% if neo4j_connector_https_listen_address|string %}
+{% if neo4j_connector_http_listen_address|string %}
 dbms.connector.http.enabled=true
 dbms.connector.http.listen_address={{ neo4j_connector_http_listen_address }}
 {% endif %}
@@ -380,9 +384,3 @@ dbms.windows_service_name=neo4j
 # Other Neo4j system properties
 #********************************************************************
 dbms.jvm.additional=-Dunsupported.dbms.udc.source=debian
-dbms.memory.heap.initial_size=512m
-dbms.memory.heap.max_size=512m
-dbms.memory.pagecache.size=6g
-dbms.connector.bolt.listen_address=:7687
-dbms.connector.http.listen_address=:7474
-dbms.connector.https.listen_address=:7473
