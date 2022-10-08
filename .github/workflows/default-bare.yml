@@ -97,3 +97,11 @@ jobs:
           tail -100 /var/log/neo4j/*
         if: ${{ always() }}
         continue-on-error: true
+      - name: After script - cypher-shell
+        run: |
+          set -x
+          cypher-shell -u neo4j -p neo4j -c 'CALL db.schema.visualization()'
+          cypher-shell -u neo4j -p neo4j -c 'MATCH (n) RETURN labels(n), count(*)'
+          cypher-shell -u neo4j -p neo4j -c 'MATCH ()-[r]->() RETURN count(r) as count'
+        if: ${{ always() }}
+        continue-on-error: true
