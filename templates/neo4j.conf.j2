@@ -58,7 +58,7 @@ dbms.memory.pagecache.size={{ neo4j_memory_pagecache_size }}
 
 # With default configuration Neo4j only accepts local connections.
 # To accept non-local connections, uncomment this line:
-{% if neo4j_connector_default_listen_address|string %}
+{% if neo4j_connector_default_listen_address is defined and neo4j_connector_default_listen_address|string %}
 dbms.connectors.default_listen_address={{ neo4j_connector_default_list_address }}
 {% else %}
 #dbms.connectors.default_listen_address=0.0.0.0
