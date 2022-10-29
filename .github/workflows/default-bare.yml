@@ -51,8 +51,13 @@ jobs:
         run: |
           set -x
           sudo update-java-alternatives --list
+          sudo update-java-alternatives -l | grep '17-jdk' | cut -d " " -f1
           sudo update-java-alternatives -s $(sudo update-java-alternatives -l | grep '17-jdk' | cut -d " " -f1)
         continue-on-error: true
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
       - name: run test
         run: |
           cd $GITHUB_WORKSPACE/kevincoakley.neo4j && ansible-playbook -i localhost, --connection=local --become -vvv molecule/default/playbook.yml ${ANSIBLE_EXTRA_VARS}
