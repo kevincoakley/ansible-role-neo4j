@@ -46,6 +46,11 @@
   ansible.builtin.set_fact:
     neo4j_v: "{{ ansible_facts.packages[neo4j_package][0]['version'] | regex_replace('^1:', '') }}"
 
+# https://neo4j.com/docs/upgrade-migration-guide/current/version-5/changelogs/configuration-settings/
+# https://neo4j.com/docs/operations-manual/5/reference/configuration-settings/
+# https://neo4j.com/docs/upgrade-migration-guide/current/version-4/changelogs/configuration-settings/
+# https://neo4j.com/docs/operations-manual/4.4/reference/configuration-settings/
+# https://neo4j.com/docs/operations-manual/3.5/reference/configuration-settings/
 - name: Set neo4j config - replacements
   when:
     - not neo4j_conf_template|string
@@ -57,6 +62,8 @@
         line: "dbms.directories.data={{ neo4j_server_database_location }}"
         state: present
       notify: Restart Neo4j
+      when:
+        - neo4j_v is version('5', '<')
 
     - name: Set the neo4j heap inital size
       ansible.builtin.lineinfile:
@@ -65,6 +72,8 @@
         line: "dbms.memory.heap.initial_size={{ neo4j_memory_heap_initial_size }}"
         state: present
       notify: Restart Neo4j
+      when:
+        - neo4j_v is version('5', '<')
 
     - name: Set the neo4j heap max size
       ansible.builtin.lineinfile:
@@ -73,6 +82,8 @@
         line: "dbms.memory.heap.max_size={{ neo4j_memory_heap_max_size }}"
         state: present
       notify: Restart Neo4j
+      when:
+        - neo4j_v is version('5', '<')
 
     - name: Set the neo4j pagecache size
       ansible.builtin.lineinfile:
@@ -81,6 +92,8 @@
         line: "dbms.memory.pagecache.size={{ neo4j_memory_pagecache_size }}"
         state: present
       notify: Restart Neo4j
+      when:
+        - neo4j_v is version('5', '<')
 
     - name: Allow any connection to Neo4J
       ansible.builtin.lineinfile:
@@ -90,6 +103,8 @@
         state: present
       when: neo4j_allow_any_connection | bool
       notify: Restart Neo4j
+      when:
+        - neo4j_v is version('4', '<')
 
     - name: Set the neo4j bolt listen address
       ansible.builtin.lineinfile:
@@ -98,6 +113,8 @@
         line: "dbms.connector.bolt.listen_address={{ neo4j_connector_bolt_listen_address }}"
         state: present
       notify: Restart Neo4j
+      when:
+        - neo4j_v is version('4', '<')
 
     - name: Set the neo4j http listen address
       ansible.builtin.lineinfile:
@@ -106,6 +123,8 @@
         line: "dbms.connector.http.listen_address={{ neo4j_connector_http_listen_address }}"
         state: present
       notify: Restart Neo4j
+      when:
+        - neo4j_v is version('4', '<')
 
     - name: Set the neo4j https listen address
       ansible.builtin.lineinfile:
@@ -114,6 +133,8 @@
         line: "dbms.connector.https.listen_address={{ neo4j_connector_https_listen_address }}"
         state: present
       notify: Restart Neo4j
+      when:
+        - neo4j_v is version('4', '<')
 
     - name: Enable prometheus metrics
       ansible.builtin.lineinfile:
