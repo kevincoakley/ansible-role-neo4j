@@ -42,6 +42,10 @@
   ansible.builtin.package_facts:
     manager: auto
 
+- name: Get neo4j version
+  ansible.builtin.set_fact:
+    neo4j_v: "{{ ansible_facts.packages[neo4j_package][0]['version'] | regex_replace('^1:', '') }}"
+
 - name: Set neo4j config - replacements
   when:
     - not neo4j_conf_template|string
@@ -119,7 +123,7 @@
         state: present
       notify: Restart Neo4j
       when:
-        - ansible_facts.packages[neo4j_package][0]['version'] is version('5', '<')
+        - neo4j_v is version('5', '<')
 
     - name: Set prometheus metrics interface
       ansible.builtin.lineinfile:
@@ -129,7 +133,7 @@
         state: present
       notify: Restart Neo4j
       when:
-        - ansible_facts.packages[neo4j_package][0]['version'] is version('5', '<')
+        - neo4j_v is version('5', '<')
 
 - name: Set the neo4j config
   ansible.builtin.template:
