@@ -51,7 +51,9 @@ jobs:
         run: |
           set -x
           sudo update-java-alternatives --list
-          sudo update-alternatives --set java $(update-alternatives --list java | grep openjdk-17)
+          sudo update-alternatives --set java /usr/lib/jvm/openjdk-17/bin/java
+          sudo update-alternatives --set javac /usr/lib/jvm/openjdk-17/bin/javac
+          sudo update-alternatives --set javadoc /usr/lib/jvm/openjdk-17/bin/javadoc
         continue-on-error: true
       - name: run test
         run: |
