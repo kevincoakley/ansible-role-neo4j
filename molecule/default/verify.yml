@@ -2,7 +2,21 @@
 - name: Verify
   hosts: all
   become: true
-
+  vars:
+    is_container: false
+  pre_tasks:
+    - name: Debug | var ansible_virtualization_type
+      ansible.builtin.debug:
+        var: ansible_virtualization_type
+    - name: Set fact is_container
+      ansible.builtin.set_fact:
+        is_container: true
+      when: >
+        (ansible_virtualization_type is defined and
+          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd"
+           or ansible_virtualization_type == "container"
+          )
+        )
   tasks:
     - name: Debian | Verify APT repository
       ansible.builtin.lineinfile:
@@ -18,3 +32,5 @@
       ansible.builtin.uri:
         url: http://127.0.0.1:7474/
         status_code: 200
+      when:
+        - not is_container|bool
