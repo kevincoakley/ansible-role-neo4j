@@ -4,6 +4,4 @@ rules:
   line-length:
     max: 160
     level: warning
-  truthy:
-    ignore: |
-      molecule-test.yml
+  truthy: disable
