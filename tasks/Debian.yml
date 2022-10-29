@@ -25,7 +25,7 @@
 - name: Ensure conflicting java packages are not present
   ansible.builtin.package:
     name: "{{ item }}"
-    state: present
+    state: absent
   loop: "{{ neo4j_java_remove }}"
 
 - name: Import the signing key for the Neo Technology Debian repository for Neo4j
