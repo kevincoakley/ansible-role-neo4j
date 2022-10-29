@@ -2,6 +2,8 @@
 # handlers file for neo4j
 
 - name: Restart Neo4j
-  ansible.builtin.service: name=neo4j state=restarted
+  ansible.builtin.service:
+    name: neo4j
+    state: restarted
   become: true
   become_method: sudo
