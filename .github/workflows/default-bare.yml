@@ -84,6 +84,13 @@ jobs:
           rsyslogd -v
         if: ${{ always() }}
         continue-on-error: true
+      - name: After script - java
+        run: |
+          set -x
+          java -version
+          dpkg -l | grep -E 'java|openjdk'
+        if: ${{ always() }}
+        continue-on-error: true
       - name: After script - files
         run: |
           set -x
