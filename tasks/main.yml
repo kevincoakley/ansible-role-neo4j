@@ -101,9 +101,9 @@
         regexp: '^(# )?dbms.connectors.default_listen_address=0.0.0.0'
         line: "dbms.connectors.default_listen_address=0.0.0.0"
         state: present
-      when: neo4j_allow_any_connection | bool
       notify: Restart Neo4j
       when:
+        - neo4j_allow_any_connection | bool
         - neo4j_v is version('4', '<')
 
     - name: Set the neo4j bolt listen address
