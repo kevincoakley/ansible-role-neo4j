@@ -59,6 +59,7 @@ jobs:
         run: |
           set -x
           cat /etc/environment
+          sed "s@^JAVA_HOME=/usr/lib/jvm/temurin-11-jdk-amd64@JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64@" /etc/environment | sudo tee /etc/environment
         continue-on-error: true
       - name: run test
         run: |
