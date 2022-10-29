@@ -18,7 +18,7 @@
     name: "{{ item }}"
     state: present
   with_items:
-    - openjdk-11-jdk
+    - openjdk-17-jdk
     - apt-transport-https
     - gpg-agent
 
