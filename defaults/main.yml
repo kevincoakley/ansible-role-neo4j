@@ -35,3 +35,5 @@ neo4j_edition: community
 # neo4j_version: use this if you want a specific version of Neo4j, omit it to get the latest
 
 # neo4j_password: 'change_me!'
+
+is_container: false

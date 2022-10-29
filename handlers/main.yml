@@ -7,3 +7,5 @@
     state: restarted
   become: true
   become_method: sudo
+  when:
+    - not is_container|bool

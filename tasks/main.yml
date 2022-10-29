@@ -5,6 +5,17 @@
 - name: Include OS specific tasks
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
 
+- name: Set fact is_container
+  ansible.builtin.set_fact:
+    is_container: true
+  when: >
+    (ansible_virtualization_type is defined and
+      (ansible_virtualization_type == "docker"
+       or ansible_virtualization_type == "containerd"
+       or ansible_virtualization_type == "container"
+      )
+    )
+
 - name: Install Neo4j
   ansible.builtin.package:
     name: "{{ neo4j_package }}"
@@ -141,10 +152,15 @@
     name: neo4j
     enabled: true
     state: started
+  when:
+    - not is_container|bool
 
 # https://neo4j.com/docs/operations-manual/current/configuration/set-initial-password/
 - name: Set Neo4j initial password
   ansible.builtin.command: "neo4j-admin set-initial-password '{{ neo4j_password }}'"
   args:
     creates: /var/lib/neo4j/data/dbms/auth.ini
-  when: neo4j_password is defined and neo4j_password | string
+  when:
+    - neo4j_password is defined
+    - neo4j_password | string
+    - not is_container|bool
