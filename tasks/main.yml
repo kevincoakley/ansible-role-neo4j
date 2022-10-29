@@ -189,7 +189,7 @@
     - not is_container|bool
 
 # https://neo4j.com/docs/operations-manual/current/configuration/set-initial-password/
-- name: Set Neo4j initial password
+- name: Set Neo4j initial password - v4
   ansible.builtin.command: "neo4j-admin set-initial-password '{{ neo4j_password }}'"
   args:
     creates: /var/lib/neo4j/data/dbms/auth.ini
@@ -197,3 +197,14 @@
     - neo4j_password is defined
     - neo4j_password | string
     - not is_container|bool
+    - neo4j_v is version('5', '<')
+
+- name: Set Neo4j initial password - v5
+  ansible.builtin.command: "neo4j-admin dbms set-initial-password '{{ neo4j_password }}'"
+  args:
+    creates: /var/lib/neo4j/data/dbms/auth.ini
+  when:
+    - neo4j_password is defined
+    - neo4j_password | string
+    - not is_container|bool
+    - neo4j_v is version('5', '>=')
