@@ -18,9 +18,15 @@
     name: "{{ item }}"
     state: present
   with_items:
-    - openjdk-17-jdk
+    - "{{ neo4j_java }}"
     - apt-transport-https
     - gpg-agent
+
+- name: Ensure conflicting java packages are not present
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ neo4j_java_remove }}"
 
 - name: Import the signing key for the Neo Technology Debian repository for Neo4j
   ansible.builtin.apt_key:

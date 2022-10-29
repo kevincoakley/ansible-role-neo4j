@@ -36,4 +36,11 @@ neo4j_edition: community
 
 # neo4j_password: 'change_me!'
 
+# Debian/Ubuntu only: neo4j 5 requires java >= 17
+neo4j_java:
+  - openjdk-17-jdk
+neo4j_java_remove:
+  - openjdk-11-jdk
+  - openjdk-11-jdk-headless
+
 is_container: false
