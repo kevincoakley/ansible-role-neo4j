@@ -50,8 +50,14 @@ jobs:
       - name: Set java
         run: |
           set -x
+          sudo rm -Rf /usr/lib/jvm/temurin-8-jdk-amd64 /usr/lib/jvm/temurin-11-jdk-amd64
           sudo update-java-alternatives --list
           sudo update-java-alternatives -s $(sudo update-java-alternatives -l | grep '17-jdk' | cut -d " " -f1)
+        continue-on-error: true
+      - name: Set java - /etc/environment
+        run: |
+          set -x
+          cat /etc/environment
         continue-on-error: true
       - name: run test
         run: |
