@@ -46,6 +46,7 @@ jobs:
           set -x
           pwd
           env
+          cat /proc/meminfo
           find -ls
       - name: Set java
         run: |
