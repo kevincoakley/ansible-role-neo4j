@@ -27,36 +27,99 @@
     group: "{{ neo4j_group }}"
     mode: 0755
 
-- name: Set the neo4j data directory
-  ansible.builtin.lineinfile:
-    dest: /etc/neo4j/neo4j.conf
-    regexp: '^dbms\.directories\.data=.*'
-    line: "dbms.directories.data={{ neo4j_server_database_location }}"
-    state: present
-  notify: Restart Neo4j
+- name: Set neo4j config - replacements
+  when:
+    - not neo4j_conf_template|string
+  block:
+    - name: Set the neo4j data directory
+      ansible.builtin.lineinfile:
+        dest: /etc/neo4j/neo4j.conf
+        regexp: '^dbms\.directories\.data=.*'
+        line: "dbms.directories.data={{ neo4j_server_database_location }}"
+        state: present
+      notify: Restart Neo4j
+
+    - name: Set the neo4j heap inital size
+      ansible.builtin.lineinfile:
+        dest: /etc/neo4j/neo4j.conf
+        regexp: '^dbms\.memory\.heap\.initial_size=.*'
+        line: "dbms.memory.heap.initial_size={{ neo4j_memory_heap_initial_size }}"
+        state: present
+      notify: Restart Neo4j
+
+    - name: Set the neo4j heap max size
+      ansible.builtin.lineinfile:
+        dest: /etc/neo4j/neo4j.conf
+        regexp: '^dbms\.memory\.heap\.max_size=.*'
+        line: "dbms.memory.heap.max_size={{ neo4j_memory_heap_max_size }}"
+        state: present
+      notify: Restart Neo4j
+
+    - name: Set the neo4j pagecache size
+      ansible.builtin.lineinfile:
+        dest: /etc/neo4j/neo4j.conf
+        regexp: '^dbms\.memory\.pagecache\.size=.*'
+        line: "dbms.memory.pagecache.size={{ neo4j_memory_pagecache_size }}"
+        state: present
+      notify: Restart Neo4j
+
+    - name: Allow any connection to Neo4J
+      ansible.builtin.lineinfile:
+        dest: /etc/neo4j/neo4j.conf
+        regexp: '^(# )?dbms.connectors.default_listen_address=0.0.0.0'
+        line: "dbms.connectors.default_listen_address=0.0.0.0"
+        state: present
+      when: neo4j_allow_any_connection | bool
+      notify: Restart Neo4j
+
+    - name: Set the neo4j bolt listen address
+      ansible.builtin.lineinfile:
+        dest: /etc/neo4j/neo4j.conf
+        regexp: '^dbms\.connector\.bolt\.listen_address=.*'
+        line: "dbms.connector.bolt.listen_address={{ neo4j_connector_bolt_listen_address }}"
+        state: present
+      notify: Restart Neo4j
+
+    - name: Set the neo4j http listen address
+      ansible.builtin.lineinfile:
+        dest: /etc/neo4j/neo4j.conf
+        regexp: '^dbms\.connector\.http\.listen_address=.*'
+        line: "dbms.connector.http.listen_address={{ neo4j_connector_http_listen_address }}"
+        state: present
+      notify: Restart Neo4j
+
+    - name: Set the neo4j https listen address
+      ansible.builtin.lineinfile:
+        dest: /etc/neo4j/neo4j.conf
+        regexp: '^dbms\.connector\.https\.listen_address=.*'
+        line: "dbms.connector.https.listen_address={{ neo4j_connector_https_listen_address }}"
+        state: present
+      notify: Restart Neo4j
+
+    - name: Enable prometheus metrics
+      ansible.builtin.lineinfile:
+        dest: /etc/neo4j/neo4j.conf
+        regexp: '^metrics\.prometheus\.enabled=.*'
+        line: "metrics.prometheus.enabled={{ neo4j_prometheus_metrics_enabled }}"
+        state: present
+      notify: Restart Neo4j
+
+    - name: Set prometheus metrics interface
+      ansible.builtin.lineinfile:
+        dest: /etc/neo4j/neo4j.conf
+        regexp: '^metrics\.prometheus\.endpoint=.*'
+        line: "metrics.prometheus.endpoint={{ neo4j_prometheus_metrics_endpoint }}"
+        state: present
+      notify: Restart Neo4j
 
 - name: Set the neo4j config
   ansible.builtin.template:
-    src: neo4j.conf.j2
+    src: "{{ neo4j_conf_template }}"
     dest: /etc/neo4j/neo4j.conf
     mode: '0644'
   notify: Restart Neo4j
-
-- name: Enable prometheus metrics
-  ansible.builtin.lineinfile:
-    dest: /etc/neo4j/neo4j.conf
-    regexp: '^metrics\.prometheus\.enabled=.*'
-    line: "metrics.prometheus.enabled={{ neo4j_prometheus_metrics_enabled }}"
-    state: present
-  notify: Restart Neo4j
-
-- name: Set prometheus metrics interface
-  ansible.builtin.lineinfile:
-    dest: /etc/neo4j/neo4j.conf
-    regexp: '^metrics\.prometheus\.endpoint=.*'
-    line: "metrics.prometheus.endpoint={{ neo4j_prometheus_metrics_endpoint }}"
-    state: present
-  notify: Restart Neo4j
+  when:
+    - neo4j_conf_template|string
 
 - name: Ensure open files soft and hard limits are set
   ansible.builtin.copy:

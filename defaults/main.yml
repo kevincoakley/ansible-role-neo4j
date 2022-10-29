@@ -24,6 +24,11 @@ neo4j_connector_https_public_certificate: ''
 neo4j_connector_https_listen_address: ''
 neo4j_server_auth_enabled: true
 
+# default play use lineinfile replacement as often change in upstream variables
+# if want to use template, ensure not empty
+neo4j_conf_template: ''
+# neo4j_conf_template: neo4j.conf.j2
+
 neo4j_prometheus_metrics_enabled: false
 neo4j_prometheus_metrics_endpoint: localhost:2004
 neo4j_edition: community
