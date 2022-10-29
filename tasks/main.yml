@@ -38,6 +38,10 @@
     group: "{{ neo4j_group }}"
     mode: 0755
 
+- name: Gather package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
 - name: Set neo4j config - replacements
   when:
     - not neo4j_conf_template|string
@@ -114,6 +118,8 @@
         line: "metrics.prometheus.enabled={{ neo4j_prometheus_metrics_enabled }}"
         state: present
       notify: Restart Neo4j
+      when:
+        - ansible_facts.packages[neo4j_package][0]['version'] is version('5', '<')
 
     - name: Set prometheus metrics interface
       ansible.builtin.lineinfile:
@@ -122,6 +128,8 @@
         line: "metrics.prometheus.endpoint={{ neo4j_prometheus_metrics_endpoint }}"
         state: present
       notify: Restart Neo4j
+      when:
+        - ansible_facts.packages[neo4j_package][0]['version'] is version('5', '<')
 
 - name: Set the neo4j config
   ansible.builtin.template:
