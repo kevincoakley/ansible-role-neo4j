@@ -10,7 +10,7 @@ jobs:
       matrix:
         molecule_distro: ['centos7', 'centos8', 'ubuntu1804', 'ubuntu2004', 'debian10']
     env:
-      ANSIBLE_CALLBACK_WHITELIST: profile_tasks
+      ANSIBLE_CALLBACKS_ENABLED: profile_tasks
 
     steps:
       - uses: actions/checkout@v1
