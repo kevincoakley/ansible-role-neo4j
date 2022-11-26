@@ -27,6 +27,8 @@ server.directories.import=import
 # Whether requests to Neo4j are authenticated.
 # To disable authentication, uncomment this line
 dbms.security.auth_enabled={{ neo4j_server_auth_enabled | bool | lower }}
+dbms.security.auth_max_failed_attempts={{ neo4j_server_auth_max_failed_attempts }}
+dbms.security.auth_lock_time={{ neo4j_server_auth_lock_time }}
 
 #********************************************************************
 # Memory Settings
