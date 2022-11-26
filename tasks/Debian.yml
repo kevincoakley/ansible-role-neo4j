@@ -1,7 +1,7 @@
 ---
 # See: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863199
 - name: Ensure 'man' directory exists.
-  file:
+  ansible.builtin.file:
     path: /usr/share/man/man1
     state: directory
     recurse: true
@@ -10,29 +10,35 @@
     - ansible_distribution == 'Ubuntu'
 
 - name: Update repositories cache
-  apt:
+  ansible.builtin.apt:
     update_cache: true
 
 - name: Install Required Ubuntu Packages
-  package:
+  ansible.builtin.package:
     name: "{{ item }}"
     state: present
   with_items:
-    - openjdk-11-jdk
+    - "{{ neo4j_java }}"
     - apt-transport-https
     - gpg-agent
 
+- name: Ensure conflicting java packages are not present
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ neo4j_java_remove }}"
+
 - name: Import the signing key for the Neo Technology Debian repository for Neo4j
-  apt_key:
+  ansible.builtin.apt_key:
     url: https://debian.neo4j.org/neotechnology.gpg.key
     state: present
 
 - name: Add the Neo Technology Debian repository for Neo4j
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb https://debian.neo4j.com stable {% if neo4j_version is defined %}{{ neo4j_version.split('.')[0:2] | join('.') }}{% else %}latest{% endif %}"
     state: present
     update_cache: true
 
 - name: Determine the neo4j package to install
-  set_fact:
+  ansible.builtin.set_fact:
     neo4j_package: neo4j{% if neo4j_edition == 'enterprise' %}-enterprise{% endif %}{% if neo4j_version is defined %}=1:{{ neo4j_version }}{% endif %}

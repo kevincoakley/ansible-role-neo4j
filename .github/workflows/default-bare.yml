@@ -1,0 +1,131 @@
+---
+name: default-bare
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            experimental: false
+          - os: ubuntu-20.04
+            experimental: false
+    env:
+      ANSIBLE_CALLBACKS_ENABLED: profile_tasks
+      ANSIBLE_EXTRA_VARS: ""
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: kevincoakley.neo4j
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install ansible-lint flake8 yamllint
+          which ansible
+          pip3 install ansible
+          pip3 show ansible
+          ls -l $HOME/.local/bin || true
+          ansible --version
+          cd $GITHUB_WORKSPACE/kevincoakley.neo4j
+          { echo '[defaults]'; echo 'callbacks_enabled = profile_tasks, timer'; echo 'roles_path = ../'; echo 'ansible_python_interpreter: /usr/bin/python3'; } >> ansible.cfg
+      - name: Environment
+        run: |
+          set -x
+          pwd
+          env
+          cat /proc/meminfo
+          find -ls
+      - name: Set java
+        run: |
+          set -x
+          sudo rm -Rf /usr/lib/jvm/temurin-8-jdk-amd64 /usr/lib/jvm/temurin-11-jdk-amd64
+          sudo update-java-alternatives --list
+          sudo update-java-alternatives -s $(sudo update-java-alternatives -l | grep '17-jdk' | cut -d " " -f1)
+        continue-on-error: true
+      - name: Set java - /etc/environment
+        run: |
+          set -x
+          cat /etc/environment
+          sed "s@^JAVA_HOME=/usr/lib/jvm/temurin-11-jdk-amd64@JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64@" /etc/environment | sudo tee /etc/environment
+        continue-on-error: true
+      - name: run test
+        run: |
+          cd $GITHUB_WORKSPACE/kevincoakley.neo4j && ansible-playbook -i localhost, --connection=local --become -vvv molecule/default/playbook.yml ${ANSIBLE_EXTRA_VARS}
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+      - name: idempotency run
+        run: |
+          cd $GITHUB_WORKSPACE/kevincoakley.neo4j && ansible-playbook -i localhost, --connection=local --become -vvv molecule/default/playbook.yml ${ANSIBLE_EXTRA_VARS} | tee /tmp/idempotency.log | grep -q 'changed=0.*failed=0'  && (echo 'Idempotence test: pass' && exit 0)  || (echo 'Idempotence test: fail' && cat /tmp/idempotency.log && exit 0)
+      - name: On failure
+        run: |
+          systemctl -l --no-pager status
+          systemctl -l --no-pager --failed
+          ls -l /usr/bin/ | egrep '(python|pip|ansible)'
+          pip freeze
+          pip3 freeze
+          ip addr
+          cat /etc/resolv.conf
+          host www.google.com
+          ping -c 1 www.google.com || true
+          ping -c 1 8.8.8.8 || true
+          ps axuw
+          netstat -anp
+        if: ${{ failure() }}
+        continue-on-error: true
+      - name: After script - ansible setup
+        run: |
+          ansible -i inventory --connection=local -m setup localhost
+        if: ${{ always() }}
+        continue-on-error: true
+      - name: After script - systemd
+        run: |
+          systemctl -l --no-pager status neo4j || true
+          systemd-analyze --no-pager security || true
+          rsyslogd -v
+        if: ${{ always() }}
+        continue-on-error: true
+      - name: After script - java
+        run: |
+          set -x
+          java -version
+          which java
+          ls -l /etc/alternatives/*java*
+          ls -l /usr/lib/jvm/
+          dpkg -l | grep -E 'java|openjdk'
+        if: ${{ always() }}
+        continue-on-error: true
+      - name: After script - files
+        run: |
+          set -x
+          ls -la /etc/neo4j
+          cat /etc/neo4j/neo4j.conf
+        if: ${{ always() }}
+        continue-on-error: true
+      - name: After script - logs
+        run: |
+          ls -la /var/log/neo4j
+          tail -100 /var/log/neo4j/*
+        if: ${{ always() }}
+        continue-on-error: true
+      - name: After script - cypher-shell
+        run: |
+          set -x
+          cypher-shell -u neo4j -p neo4j -c 'CALL db.schema.visualization()'
+          cypher-shell -u neo4j -p neo4j -c 'MATCH (n) RETURN labels(n), count(*)'
+          cypher-shell -u neo4j -p neo4j -c 'MATCH ()-[r]->() RETURN count(r) as count'
+        if: ${{ always() }}
+        continue-on-error: true

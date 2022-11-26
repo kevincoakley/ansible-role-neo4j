@@ -1,0 +1,45 @@
+---
+name: lint
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+    env:
+      ANSIBLE_CALLBACKS_ENABLED: profile_tasks
+      ANSIBLE_EXTRA_VARS: ""
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: kevincoakley.neo4j
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install --pre ansible-lint flake8 yamllint
+          which ansible
+          pip3 install ansible
+          pip3 show ansible
+          ansible --version
+      - name: Environment
+        run: |
+          pwd
+          env
+          find -ls
+      - name: yamllint
+        run: |
+          cd $GITHUB_WORKSPACE/kevincoakley.neo4j && yamllint .
+      - name: ansible-lint
+        run: |
+          cd $GITHUB_WORKSPACE/kevincoakley.neo4j && ansible-lint
