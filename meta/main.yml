@@ -6,7 +6,7 @@ galaxy_info:
   description: Install Neo4j (http://neo4j.com/)
   license: BSD
 
-  min_ansible_version: 2.4
+  min_ansible_version: "2.4"
 
   # Optionally specify the branch Galaxy will use when accessing the GitHub
   # repo for this role. During role install, if no tags are available,
@@ -24,12 +24,12 @@ galaxy_info:
   platforms:
     - name: EL
       versions:
-        - 7
-        - 8
+        - "8"
+        - "9"
     - name: Ubuntu
       versions:
-        - bionic
         - focal
+        - jammy
 
   galaxy_tags:
     - database

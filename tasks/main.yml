@@ -30,40 +30,40 @@
 - name: Set the neo4j data directory
   lineinfile:
     dest: /etc/neo4j/neo4j.conf
-    regexp: '^dbms\.directories\.data=.*'
-    line: "dbms.directories.data={{ neo4j_server_database_location }}"
+    regexp: '^server\.directories\.data=.*'
+    line: "server.directories.data={{ neo4j_server_database_location }}"
     state: present
   notify: Restart Neo4j
 
 - name: Set the neo4j heap inital size
   lineinfile:
     dest: /etc/neo4j/neo4j.conf
-    regexp: '^dbms\.memory\.heap\.initial_size=.*'
-    line: "dbms.memory.heap.initial_size={{ neo4j_memory_heap_initial_size }}"
+    regexp: '^server\.memory\.heap\.initial_size=.*'
+    line: "server.memory.heap.initial_size={{ neo4j_memory_heap_initial_size }}"
     state: present
   notify: Restart Neo4j
 
 - name: Set the neo4j heap max size
   lineinfile:
     dest: /etc/neo4j/neo4j.conf
-    regexp: '^dbms\.memory\.heap\.max_size=.*'
-    line: "dbms.memory.heap.max_size={{ neo4j_memory_heap_max_size }}"
+    regexp: '^server\.memory\.heap\.max_size=.*'
+    line: "server.memory.heap.max_size={{ neo4j_memory_heap_max_size }}"
     state: present
   notify: Restart Neo4j
 
 - name: Set the neo4j pagecache size
   lineinfile:
     dest: /etc/neo4j/neo4j.conf
-    regexp: '^dbms\.memory\.pagecache\.size=.*'
-    line: "dbms.memory.pagecache.size={{ neo4j_memory_pagecache_size }}"
+    regexp: '^server\.memory\.pagecache\.size=.*'
+    line: "server.memory.pagecache.size={{ neo4j_memory_pagecache_size }}"
     state: present
   notify: Restart Neo4j
 
 - name: Allow any connection to Neo4J
   lineinfile:
     dest: /etc/neo4j/neo4j.conf
-    regexp: '^(# )?dbms.connectors.default_listen_address=0.0.0.0'
-    line: "dbms.connectors.default_listen_address=0.0.0.0"
+    regexp: '^(# )?server.default_listen_address=0.0.0.0'
+    line: "server.default_listen_address=0.0.0.0"
     state: present
   when: neo4j_allow_any_connection | bool
   notify: Restart Neo4j
@@ -71,40 +71,24 @@
 - name: Set the neo4j bolt listen address
   lineinfile:
     dest: /etc/neo4j/neo4j.conf
-    regexp: '^dbms\.connector\.bolt\.listen_address=.*'
-    line: "dbms.connector.bolt.listen_address={{ neo4j_connector_bolt_listen_address }}"
+    regexp: '^server\.bolt\.listen_address=.*'
+    line: "server.bolt.listen_address={{ neo4j_connector_bolt_listen_address }}"
     state: present
   notify: Restart Neo4j
 
 - name: Set the neo4j http listen address
   lineinfile:
     dest: /etc/neo4j/neo4j.conf
-    regexp: '^dbms\.connector\.http\.listen_address=.*'
-    line: "dbms.connector.http.listen_address={{ neo4j_connector_http_listen_address }}"
+    regexp: '^server\.http\.listen_address=.*'
+    line: "server.http.listen_address={{ neo4j_connector_http_listen_address }}"
     state: present
   notify: Restart Neo4j
 
 - name: Set the neo4j https listen address
   lineinfile:
     dest: /etc/neo4j/neo4j.conf
-    regexp: '^dbms\.connector\.https\.listen_address=.*'
-    line: "dbms.connector.https.listen_address={{ neo4j_connector_https_listen_address }}"
-    state: present
-  notify: Restart Neo4j
-
-- name: Enable prometheus metrics
-  lineinfile:
-    dest: /etc/neo4j/neo4j.conf
-    regexp: '^metrics\.prometheus\.enabled=.*'
-    line: "metrics.prometheus.enabled={{ neo4j_prometheus_metrics_enabled }}"
-    state: present
-  notify: Restart Neo4j
-
-- name: Set prometheus metrics interface
-  lineinfile:
-    dest: /etc/neo4j/neo4j.conf
-    regexp: '^metrics\.prometheus\.endpoint=.*'
-    line: "metrics.prometheus.endpoint={{ neo4j_prometheus_metrics_endpoint }}"
+    regexp: '^server\.https\.listen_address=.*'
+    line: "server.https.listen_address={{ neo4j_connector_https_listen_address }}"
     state: present
   notify: Restart Neo4j
 
