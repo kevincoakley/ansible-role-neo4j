@@ -1,13 +1,13 @@
 ---
 - name: Install Required RedHat Packages
-  package:
+  ansible.builtin.package:
     name: "{{ item }}"
     state: present
   with_items:
     - which
 
 - name: Add Neo4j Yum Repo
-  yum_repository:
+  ansible.builtin.yum_repository:
     name: neo4j
     description: Neo4j Yum Repo
     baseurl: https://yum.neo4j.com/stable
@@ -15,5 +15,5 @@
     gpgcheck: true
 
 - name: Determine the neo4j package to install
-  set_fact:
+  ansible.builtin.set_fact:
     neo4j_package: neo4j{% if neo4j_edition == 'enterprise' %}-enterprise{% endif %}{% if neo4j_version is defined %}-{{ neo4j_version }}{% endif %}
