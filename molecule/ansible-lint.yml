@@ -1,6 +1,5 @@
 ---
 warn_list:
   - internal-error
-  - fqcn
 skip_list:
   - yaml

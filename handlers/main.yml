@@ -2,7 +2,7 @@
 # handlers file for neo4j
 
 - name: Restart Neo4j
-  service:
+  ansible.builtin.service:
     name: neo4j
     state: restarted
   become: true
