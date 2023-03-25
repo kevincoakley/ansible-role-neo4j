@@ -6,6 +6,6 @@
   vars:
     neo4j_allow_any_connection: true
     neo4j_memory_pagecache_size: 1g
-    neo4j_password: 'neo4j'
+    neo4j_password: 'neo4j1234'
   roles:
     - role: kevincoakley.neo4j
