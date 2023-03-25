@@ -30,7 +30,7 @@
 
 - name: Import the signing key for the Neo Technology Debian repository for Neo4j
   ansible.builtin.apt_key:
-    url: https://debian.neo4j.org/neotechnology.gpg.key
+    url: https://debian.neo4j.com/neotechnology.gpg.key
     state: present
     validate_certs: "{{ neo4j_apt_key_validate_certs }}"
 
